@@ -4,6 +4,7 @@ import '../core/constants/app_constants.dart';
 import '../models/stream_model.dart';
 import '../models/product_model.dart';
 
+
 class ApiService {
   // Singleton pattern
   static final ApiService _instance = ApiService._internal();
