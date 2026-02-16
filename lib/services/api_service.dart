@@ -48,6 +48,40 @@ class ApiService {
     }
   }
 
+  Future<List<StreamModel>> getLiveStreams() async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl${AppConstants.streamEndpoint}/live'))
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => StreamModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load live streams: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching live streams: $e');
+    }
+  }
+
+  Future<List<StreamModel>> getRecentStreams({int limit = 10}) async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl${AppConstants.streamEndpoint}/recent?limit=$limit'))
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => StreamModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load recent streams: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching recent streams: $e');
+    }
+  }
+
   Future<StreamModel> createStream({
     required String callId,
     required String title,
@@ -205,6 +239,39 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Error getting stream token: $e');
+    }
+  }
+
+  // Update user profile
+  Future<Map<String, dynamic>> updateProfile({
+    String? email,
+    String? fullName,
+    String? mobileNumber,
+    String? address,
+  }) async {
+    try {
+      final body = <String, dynamic>{};
+      if (email != null) body['email'] = email;
+      if (fullName != null) body['fullName'] = fullName;
+      if (mobileNumber != null) body['mobileNumber'] = mobileNumber;
+      if (address != null) body['address'] = address;
+
+      final response = await http
+          .patch(
+            Uri.parse('$baseUrl${AppConstants.authEndpoint}/me'),
+            headers: _headers,
+            body: json.encode(body),
+          )
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body) as Map<String, dynamic>;
+      } else {
+        final error = json.decode(response.body);
+        throw Exception(error['error'] ?? 'Failed to update profile');
+      }
+    } catch (e) {
+      throw Exception('Error updating profile: $e');
     }
   }
 }

@@ -56,6 +56,11 @@ class StreamModel {
   bool get isActive => status == 'active';
   bool get isEnded => status == 'ended';
   bool get hasRecording => recording != null;
+
+  String getRecordingUrl(String baseUrl) {
+    if (!hasRecording) return '';
+    return '$baseUrl/stream/$callId/recording/video';
+  }
 }
 
 class Recording {

@@ -3,6 +3,8 @@ class UserModel {
   final String email;
   final String? fullName;
   final String? imageUrl;
+  final String? mobileNumber;
+  final String? address;
   final DateTime createdAt;
 
   UserModel({
@@ -10,6 +12,8 @@ class UserModel {
     required this.email,
     this.fullName,
     this.imageUrl,
+    this.mobileNumber,
+    this.address,
     required this.createdAt,
   });
 
@@ -19,6 +23,8 @@ class UserModel {
       email: json['email'] as String,
       fullName: json['fullName'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      mobileNumber: json['mobileNumber'] as String?,
+      address: json['address'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
@@ -31,6 +37,8 @@ class UserModel {
       'email': email,
       'fullName': fullName,
       'imageUrl': imageUrl,
+      'mobileNumber': mobileNumber,
+      'address': address,
       'createdAt': createdAt.toIso8601String(),
     };
   }

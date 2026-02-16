@@ -127,6 +127,42 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // Update user profile
+  Future<bool> updateProfile({
+    String? email,
+    String? fullName,
+    String? mobileNumber,
+    String? address,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedUserData = await _apiService.updateProfile(
+        email: email,
+        fullName: fullName,
+        mobileNumber: mobileNumber,
+        address: address,
+      );
+
+      // Update local user model
+      _user = UserModel.fromJson(updatedUserData);
+      
+      // Update stored user data
+      await _authService.updateStoredUser(_user!);
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   // Clear error
   void clearError() {
     _error = null;

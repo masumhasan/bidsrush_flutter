@@ -169,4 +169,11 @@ class AuthService {
     final token = await getToken();
     return token != null;
   }
+
+  // Update stored user data (for caching purposes)
+  Future<void> updateStoredUser(UserModel user) async {
+    // This is a placeholder for future implementation if needed
+    // Currently, user data is fetched from the backend on each app start
+    debugPrint('User profile updated: ${user.email}');
+  }
 }

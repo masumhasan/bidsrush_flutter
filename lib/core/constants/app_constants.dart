@@ -35,6 +35,7 @@ class AppConstants {
   );
 
   // API Routes
+  static const String authEndpoint = '/auth';
   static const String streamEndpoint = '/stream';
   static const String productsEndpoint = '/products';
   static const String streamTokenEndpoint = '/stream/token';

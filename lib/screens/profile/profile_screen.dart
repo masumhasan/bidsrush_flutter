@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/theme.dart';
+import 'profile_edit_screen.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -39,16 +41,31 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             _buildProfileOption(
+              context,
               icon: Icons.person_outline,
               title: 'Edit Profile',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ProfileEditScreen(),
+                  ),
+                );
+              },
             ),
             _buildProfileOption(
+              context,
               icon: Icons.settings_outlined,
               title: 'Settings',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsScreen(),
+                  ),
+                );
+              },
             ),
             _buildProfileOption(
+              context,
               icon: Icons.help_outline,
               title: 'Help & Support',
               onTap: () {},
@@ -81,7 +98,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileOption({
+  Widget _buildProfileOption(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,

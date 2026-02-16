@@ -8,6 +8,7 @@ import 'providers/video_stream_provider.dart';
 import 'providers/chat_provider.dart';
 import 'screens/auth/sign_in_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/home/all_live_streams_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
             routes: {
               '/home': (context) => const HomeScreen(),
               '/sign-in': (context) => const SignInScreen(),
+              '/all-live-streams': (context) => const AllLiveStreamsScreen(),
             },
           );
         },
