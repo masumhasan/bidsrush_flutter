@@ -12,6 +12,7 @@ import '../profile/profile_screen.dart';
 import '../auth/sign_in_screen.dart';
 import '../video/video_playback_screen.dart';
 import 'all_live_streams_screen.dart';
+import 'all_past_lives_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -407,7 +408,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const AllPastLivesScreen(),
+                    ),
+                  );
+                },
                 child: const Text(
                   'View all',
                   style: TextStyle(

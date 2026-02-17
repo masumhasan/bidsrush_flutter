@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../core/constants/app_constants.dart';
 import '../models/stream_model.dart';
@@ -168,6 +169,59 @@ class ApiService {
 
   String getRecordingVideoUrl(String callId) {
     return '$baseUrl${AppConstants.streamEndpoint}/$callId/recording/video';
+  }
+
+  // Upload recording video to backend
+  Future<void> uploadRecording({
+    required String callId,
+    required File videoFile,
+    required int durationInSeconds,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl${AppConstants.streamEndpoint}/$callId/recording',
+      );
+
+      var request = http.MultipartRequest('POST', uri);
+      
+      // Add auth header
+      if (_authToken != null) {
+        request.headers['Authorization'] = 'Bearer $_authToken';
+      }
+      
+      // Add video file
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'video',
+          videoFile.path,
+          filename: '$callId.mp4',
+        ),
+      );
+      
+      // Add duration
+      request.fields['duration'] = durationInSeconds.toString();
+
+      print('📤 Uploading recording: ${videoFile.path}');
+      print('   Size: ${(await videoFile.length()) / (1024 * 1024)} MB');
+      print('   Duration: $durationInSeconds seconds');
+
+      final streamedResponse = await request.send().timeout(
+        const Duration(minutes: 10), // Long timeout for large files
+      );
+      
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        print('✅ Recording uploaded successfully');
+      } else {
+        print('❌ Upload failed: ${response.statusCode}');
+        print('   Response: ${response.body}');
+        throw Exception('Failed to upload recording: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error uploading recording: $e');
+      throw Exception('Error uploading recording: $e');
+    }
   }
 
   // Product APIs

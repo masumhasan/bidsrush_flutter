@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stream_video_flutter/stream_video_flutter.dart';
 import '../services/stream_service.dart';
+import '../services/api_service.dart';
 
 class VideoStreamProvider with ChangeNotifier {
   final StreamService _streamService = StreamService();
+  final ApiService _apiService = ApiService();
 
   Call? _activeCall;
   bool _isLoading = false;
@@ -12,6 +15,7 @@ class VideoStreamProvider with ChangeNotifier {
   bool _isMicEnabled = true;
   bool _isRecording = false;
   bool _isLive = false;
+  String? _currentCallId;
 
   Call? get activeCall => _activeCall;
   bool get isLoading => _isLoading;
@@ -47,6 +51,7 @@ class VideoStreamProvider with ChangeNotifier {
   }) async {
     _isLoading = true;
     _error = null;
+    _currentCallId = callId;
     notifyListeners();
 
     try {
@@ -63,10 +68,17 @@ class VideoStreamProvider with ChangeNotifier {
         await _streamService.goLive();
         _isLive = true;
 
+        // Start Stream.io cloud recording
         if (enableRecording) {
-          debugPrint('[VideoStreamProvider] Starting recording...');
-          await _streamService.startRecording();
-          _isRecording = true;
+          debugPrint('[VideoStreamProvider] Starting Stream.io recording...');
+          try {
+            await _streamService.startRecording();
+            _isRecording = true;
+            debugPrint('✅ Stream.io recording started');
+          } catch (e) {
+            debugPrint('⚠️ Failed to start recording: $e');
+            _error = 'Recording failed to start, but stream is live';
+          }
         }
       }
 
@@ -77,6 +89,7 @@ class VideoStreamProvider with ChangeNotifier {
       debugPrint('[VideoStreamProvider] Error in startStream: $e');
       _error = e.toString();
       _isLoading = false;
+      _currentCallId = null;
       notifyListeners();
       return false;
     }
@@ -134,15 +147,18 @@ class VideoStreamProvider with ChangeNotifier {
   // Leave stream
   Future<void> leaveStream() async {
     try {
+      // Stop recording if active (without upload, since this might be viewer leaving)
       if (_isRecording) {
         await _streamService.stopRecording();
         _isRecording = false;
       }
+      
       await _streamService.leaveCall();
       _activeCall = null;
       _isLive = false;
       _isCameraEnabled = true;
       _isMicEnabled = true;
+      _currentCallId = null;
       notifyListeners();
     } catch (e) {
       _error = e.toString();
@@ -154,15 +170,23 @@ class VideoStreamProvider with ChangeNotifier {
   // End stream (host only)
   Future<void> endStream() async {
     try {
+      // Stop Stream.io recording
       if (_isRecording) {
+        debugPrint('🛑 Stopping Stream.io recording...');
         await _streamService.stopRecording();
         _isRecording = false;
+        
+        // Note: Stream.io recordings need to be downloaded from their servers
+        // Use backend script to fetch recordings from Stream.io API
+        debugPrint('📝 Recording stopped. Use backend script to download from Stream.io');
       }
+      
       await _streamService.endCall();
       _activeCall = null;
       _isLive = false;
       _isCameraEnabled = true;
       _isMicEnabled = true;
+      _currentCallId = null;
       notifyListeners();
     } catch (e) {
       _error = e.toString();
