@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/theme.dart';
 import '../seller/seller_intro_screen.dart';
+import 'change_email_screen.dart';
+import 'change_password_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -146,13 +148,25 @@ class SettingsScreen extends StatelessWidget {
                   _buildListOption(
                     icon: Icons.email_outlined,
                     title: 'Change Email',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChangeEmailScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   _buildListOption(
                     icon: Icons.lock_outline,
                     title: 'Change Password',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   _buildListOption(

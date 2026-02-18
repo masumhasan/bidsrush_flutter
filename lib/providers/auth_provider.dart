@@ -163,6 +163,29 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // Update user after email change
+  Future<void> updateUserAfterEmailChange(
+    Map<String, dynamic> userData,
+    String newToken,
+  ) async {
+    try {
+      // Update user model
+      _user = UserModel.fromJson(userData);
+      
+      // Update stored user data
+      await _authService.updateStoredUser(_user!);
+      
+      // Update token
+      await _authService.saveToken(newToken);
+      _apiService.setAuthToken(newToken);
+      
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating user after email change: $e');
+      rethrow;
+    }
+  }
+
   // Clear error
   void clearError() {
     _error = null;

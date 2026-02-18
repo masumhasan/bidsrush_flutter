@@ -328,4 +328,74 @@ class ApiService {
       throw Exception('Error updating profile: $e');
     }
   }
+
+  // Change password
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl${AppConstants.authEndpoint}/change-password'),
+            headers: _headers,
+            body: json.encode({
+              'currentPassword': currentPassword,
+              'newPassword': newPassword,
+            }),
+          )
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        try {
+          final error = json.decode(response.body);
+          throw Exception(error['error'] ?? 'Failed to change password');
+        } catch (e) {
+          throw Exception('Failed to change password: ${response.body}');
+        }
+      }
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Error changing password: $e');
+    }
+  }
+
+  // Change email
+  Future<Map<String, dynamic>> changeEmail({
+    required String password,
+    required String newEmail,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl${AppConstants.authEndpoint}/change-email'),
+            headers: _headers,
+            body: json.encode({
+              'password': password,
+              'newEmail': newEmail,
+            }),
+          )
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body) as Map<String, dynamic>;
+      } else {
+        try {
+          final error = json.decode(response.body);
+          throw Exception(error['error'] ?? 'Failed to change email');
+        } catch (e) {
+          throw Exception('Failed to change email: ${response.body}');
+        }
+      }
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Error changing email: $e');
+    }
+  }
 }

@@ -176,4 +176,9 @@ class AuthService {
     // Currently, user data is fetched from the backend on each app start
     debugPrint('User profile updated: ${user.email}');
   }
+
+  // Public method to save token (used when updating authentication)
+  Future<void> saveToken(String token) async {
+    await _saveToken(token);
+  }
 }
