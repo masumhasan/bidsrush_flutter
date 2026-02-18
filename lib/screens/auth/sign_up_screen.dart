@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../providers/auth_provider.dart';
+import '../seller/seller_intro_screen.dart';
 
 /// Mobile-first Sign Up Screen with clean, minimal styling
 class SignUpScreen extends StatefulWidget {
@@ -235,6 +236,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 16),
+          // Become a seller link
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SellerIntroScreen(),
+                ),
+              );
+            },
+            child: const Text(
+              'Want to sell on BidsRush? Become a Seller',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                color: Color(0xFFFF9800),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           const SizedBox(height: 40),
         ],

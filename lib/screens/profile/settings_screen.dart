@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/theme.dart';
+import '../seller/seller_intro_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -152,6 +153,18 @@ class SettingsScreen extends StatelessWidget {
                     icon: Icons.lock_outline,
                     title: 'Change Password',
                     onTap: () {},
+                  ),
+                  const SizedBox(height: 8),
+                  _buildListOption(
+                    icon: Icons.store_outlined,
+                    title: 'Become a Seller',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SellerIntroScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   _buildListOption(
