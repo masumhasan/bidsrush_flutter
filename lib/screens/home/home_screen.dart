@@ -11,6 +11,7 @@ import '../stream/viewer_screen.dart';
 import '../profile/profile_screen.dart';
 import '../auth/sign_in_screen.dart';
 import '../video/video_playback_screen.dart';
+import '../seller/seller_hub_screen.dart';
 import 'all_live_streams_screen.dart';
 import 'all_past_lives_screen.dart';
 
@@ -228,18 +229,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const StartStreamScreen()),
+      floatingActionButton: Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          final user = authProvider.user;
+          final isSeller = user?.isSeller ?? false;
+          
+          // Only show button for sellers
+          if (!isSeller) {
+            return const SizedBox.shrink();
+          }
+          
+          return FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SellerHubScreen()),
+              );
+            },
+            backgroundColor: AppTheme.primaryBlue,
+            icon: const Icon(Icons.store),
+            label: Text(
+              'Seller Hub',
+              style: AppTheme.labelLarge.copyWith(color: Colors.white),
+            ),
           );
         },
-        backgroundColor: AppTheme.primaryBlue,
-        icon: const Icon(Icons.videocam),
-        label: Text(
-          'GO LIVE',
-          style: AppTheme.labelLarge.copyWith(color: Colors.white),
-        ),
       ),
     );
   }
