@@ -14,6 +14,7 @@ import '../video/video_playback_screen.dart';
 import '../seller/seller_hub_screen.dart';
 import 'all_live_streams_screen.dart';
 import 'all_past_lives_screen.dart';
+import '../categories/categories_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -276,7 +277,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const CategoriesScreen(),
+                      ),
+                    );
+                  },
                   child: const Text(
                     'View all',
                     style: TextStyle(

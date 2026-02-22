@@ -5,6 +5,7 @@ import '../../config/theme.dart';
 import '../seller/seller_intro_screen.dart';
 import 'change_email_screen.dart';
 import 'change_password_screen.dart';
+import 'referral_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -105,7 +106,13 @@ class SettingsScreen extends StatelessWidget {
                         child: _buildGridOption(
                           icon: Icons.monetization_on_outlined,
                           title: 'Referrals & Credit',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ReferralScreen(),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: 12),
