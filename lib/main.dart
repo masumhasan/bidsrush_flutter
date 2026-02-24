@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (context, auth, _) {
           return MaterialApp(
-            title: 'BidsRush Live',
+            title: 'BidsRush',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             home: auth.isLoading

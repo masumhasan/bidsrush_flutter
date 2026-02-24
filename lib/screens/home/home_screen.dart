@@ -94,18 +94,15 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Row(
-          children: [
-            Text('BIDS', style: AppTheme.headingMedium.copyWith(fontSize: 20)),
-            Text(
-              'RUSH',
-              style: AppTheme.headingMedium.copyWith(
-                fontSize: 20,
-                color: AppTheme.primaryYellow,
-              ),
-            ),
-          ],
+        title: Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: Image.asset(
+            'assets/images/bidsrush_logo.png',
+            height: 38,
+            fit: BoxFit.contain,
+          ),
         ),
+        titleSpacing: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.chat_bubble_outline, color: Colors.black),
