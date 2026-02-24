@@ -9,6 +9,7 @@ import 'providers/chat_provider.dart';
 import 'screens/auth/sign_in_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/home/all_live_streams_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,25 +38,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => VideoStreamProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
-      child: Consumer<AuthProvider>(
-        builder: (context, auth, _) {
-          return MaterialApp(
-            title: 'BidsRush',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            home: auth.isLoading
-                ? const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  )
-                : auth.isAuthenticated
-                ? const HomeScreen()
-                : const SignInScreen(),
-            routes: {
-              '/home': (context) => const HomeScreen(),
-              '/sign-in': (context) => const SignInScreen(),
-              '/all-live-streams': (context) => const AllLiveStreamsScreen(),
-            },
-          );
+      child: MaterialApp(
+        title: 'BidsRush',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        home: const SplashScreen(),
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/sign-in': (context) => const SignInScreen(),
+          '/all-live-streams': (context) => const AllLiveStreamsScreen(),
         },
       ),
     );
