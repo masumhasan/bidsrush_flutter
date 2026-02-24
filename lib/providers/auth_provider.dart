@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -190,5 +191,31 @@ class AuthProvider with ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  // Upload avatar image
+  Future<bool> uploadAvatar(File imageFile) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final result = await _apiService.uploadAvatar(imageFile);
+
+      // Update local user model from the returned user data
+      if (result.containsKey('user')) {
+        _user = UserModel.fromJson(result['user']);
+        await _authService.updateStoredUser(_user!);
+      }
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 }

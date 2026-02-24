@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../core/constants/app_constants.dart';
 import '../models/stream_model.dart';
 import '../models/product_model.dart';
@@ -327,6 +328,55 @@ class ApiService {
     } catch (e) {
       throw Exception('Error updating profile: $e');
     }
+  }
+
+  // Upload avatar image
+  Future<Map<String, dynamic>> uploadAvatar(File imageFile) async {
+    try {
+      final uri = Uri.parse('$baseUrl${AppConstants.authEndpoint}/me/avatar');
+      final request = http.MultipartRequest('POST', uri);
+
+      if (_authToken != null) {
+        request.headers['Authorization'] = 'Bearer $_authToken';
+      }
+
+      // Determine content type from file extension
+      final ext = imageFile.path.split('.').last.toLowerCase();
+      final mimeType = {
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'png': 'image/png',
+        'gif': 'image/gif',
+        'webp': 'image/webp',
+      }[ext] ?? 'image/jpeg';
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'avatar',
+          imageFile.path,
+          contentType: MediaType.parse(mimeType),
+        ),
+      );
+
+      final streamedResponse = await request.send().timeout(AppConstants.apiTimeout);
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body) as Map<String, dynamic>;
+      } else {
+        final error = json.decode(response.body);
+        throw Exception(error['error'] ?? 'Failed to upload avatar');
+      }
+    } catch (e) {
+      throw Exception('Error uploading avatar: $e');
+    }
+  }
+
+  // Get full URL for a relative image path (e.g. /uploads/avatars/...)
+  String getFullImageUrl(String relativePath) {
+    // Strip the /api suffix from baseUrl to get the server root
+    final serverRoot = baseUrl.replaceAll('/api', '');
+    return '$serverRoot$relativePath';
   }
 
   // Change password

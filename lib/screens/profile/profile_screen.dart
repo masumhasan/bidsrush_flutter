@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/theme.dart';
+import '../../services/api_service.dart';
 import 'profile_edit_screen.dart';
 import 'settings_screen.dart';
 
@@ -12,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     final user = auth.user;
+    final apiService = ApiService();
 
     return Scaffold(
       appBar: AppBar(
@@ -25,10 +27,19 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const CircleAvatar(
+            CircleAvatar(
               radius: 50,
               backgroundColor: AppTheme.primaryBlue,
-              child: Icon(Icons.person, size: 50, color: Colors.white),
+              backgroundImage: user?.imageUrl != null && user!.imageUrl!.isNotEmpty
+                  ? NetworkImage(
+                      user.imageUrl!.startsWith('http')
+                          ? user.imageUrl!
+                          : apiService.getFullImageUrl(user.imageUrl!),
+                    )
+                  : null,
+              child: user?.imageUrl == null || user!.imageUrl!.isEmpty
+                  ? const Icon(Icons.person, size: 50, color: Colors.white)
+                  : null,
             ),
             const SizedBox(height: 16),
             Text(
